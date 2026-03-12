@@ -1061,7 +1061,8 @@ const fetchKiroQuota = async (
   }
 
   // Use apiClient to make authenticated request to management API
-  const endpoint = `/v0/management/auth/${encodeURIComponent(fileId)}/kiro-quota`;
+  // apiClient already includes /v0/management as baseURL, so we only need the relative path
+  const endpoint = `/auth/${encodeURIComponent(fileId)}/kiro-quota`;
 
   try {
     const data = await apiClient.get<unknown>(endpoint);
