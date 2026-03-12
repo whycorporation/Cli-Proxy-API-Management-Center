@@ -1119,7 +1119,9 @@ const renderKiroItems = (
   );
 
   // Main usage bar
-  const percentLabel = `${Math.round(info.balancePercent)}%`;
+  // Calculate used percentage (balancePercent is remaining, we need used)
+  const usedPercent = info.usageLimit > 0 ? (info.currentUsage / info.usageLimit) * 100 : 0;
+  const percentLabel = `${Math.round(usedPercent)}%`;
   const usageLabel = `${info.currentUsage.toFixed(1)} / ${info.usageLimit.toFixed(1)}`;
 
   nodes.push(
@@ -1137,7 +1139,7 @@ const renderKiroItems = (
           h('span', { className: styleMap.quotaAmount }, usageLabel)
         )
       ),
-      h(QuotaProgressBar, { percent: info.balancePercent, highThreshold: 60, mediumThreshold: 20 })
+      h(QuotaProgressBar, { percent: usedPercent, highThreshold: 60, mediumThreshold: 20 })
     )
   );
 
@@ -1152,40 +1154,11 @@ const renderKiroItems = (
     );
   }
 
-  // Free trial info
-  if (info.freeTrialLimit && info.freeTrialLimit > 0) {
-    const trialUsed = info.freeTrialUsage || 0;
-    const trialRemaining = Math.max(0, info.freeTrialLimit - trialUsed);
-    const trialPercent = info.freeTrialLimit > 0
-      ? Math.round((trialRemaining / info.freeTrialLimit) * 100)
-      : 0;
-
-    nodes.push(
-      h(
-        'div',
-        { key: 'free-trial', className: styleMap.quotaRow },
-        h(
-          'div',
-          { className: styleMap.quotaRowHeader },
-          h('span', { className: styleMap.quotaModel }, t('kiro_quota.free_trial_label')),
-          h(
-            'div',
-            { className: styleMap.quotaMeta },
-            h('span', { className: styleMap.quotaPercent }, `${trialPercent}%`),
-            h('span', { className: styleMap.quotaAmount }, `${trialUsed.toFixed(1)} / ${info.freeTrialLimit.toFixed(1)}`)
-          )
-        ),
-        h(QuotaProgressBar, { percent: trialPercent, highThreshold: 60, mediumThreshold: 20 })
-      )
-    );
-  }
-
-  // Bonus info
+  // Free trial info (bonus credits)
   if (info.bonusLimit && info.bonusLimit > 0) {
     const bonusUsed = info.bonusUsage || 0;
-    const bonusRemaining = Math.max(0, info.bonusLimit - bonusUsed);
     const bonusPercent = info.bonusLimit > 0
-      ? Math.round((bonusRemaining / info.bonusLimit) * 100)
+      ? Math.round((bonusUsed / info.bonusLimit) * 100)
       : 0;
 
     nodes.push(
@@ -1204,6 +1177,33 @@ const renderKiroItems = (
           )
         ),
         h(QuotaProgressBar, { percent: bonusPercent, highThreshold: 60, mediumThreshold: 20 })
+      )
+    );
+  }
+
+  // Free trial info (if different from bonus)
+  if (info.freeTrialLimit && info.freeTrialLimit > 0) {
+    const trialUsed = info.freeTrialUsage || 0;
+    const trialPercent = info.freeTrialLimit > 0
+      ? Math.round((trialUsed / info.freeTrialLimit) * 100)
+      : 0;
+
+    nodes.push(
+      h(
+        'div',
+        { key: 'free-trial', className: styleMap.quotaRow },
+        h(
+          'div',
+          { className: styleMap.quotaRowHeader },
+          h('span', { className: styleMap.quotaModel }, t('kiro_quota.free_trial_label')),
+          h(
+            'div',
+            { className: styleMap.quotaMeta },
+            h('span', { className: styleMap.quotaPercent }, `${trialPercent}%`),
+            h('span', { className: styleMap.quotaAmount }, `${trialUsed.toFixed(1)} / ${info.freeTrialLimit.toFixed(1)}`)
+          )
+        ),
+        h(QuotaProgressBar, { percent: trialPercent, highThreshold: 60, mediumThreshold: 20 })
       )
     );
   }
