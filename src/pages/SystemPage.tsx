@@ -72,7 +72,7 @@ export function SystemPage() {
 
   const appVersion = __APP_VERSION__ || t('system_info.version_unknown');
   const apiVersion = auth.serverVersion || t('system_info.version_unknown');
-  const buildTime = auth.serverBuildDate
+  const buildTime = auth.serverBuildDate && auth.serverBuildDate !== 'unknown'
     ? new Date(auth.serverBuildDate).toLocaleString(i18n.language)
     : t('system_info.version_unknown');
 

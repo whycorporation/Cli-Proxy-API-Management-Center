@@ -272,7 +272,7 @@ export function DashboardPage() {
               v{serverVersion.trim().replace(/^[vV]+/, '')}
             </span>
           )}
-          {serverBuildDate && (
+          {serverBuildDate && serverBuildDate !== 'unknown' && (
             <span className={styles.buildDate}>
               {new Date(serverBuildDate).toLocaleDateString(i18n.language)}
             </span>
