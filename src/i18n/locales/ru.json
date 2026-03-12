@@ -665,6 +665,27 @@
     "limit_index": "Лимит #{{index}}",
     "reset_hint": "сброс через {{hint}}"
   },
+  "kiro_quota": {
+    "title": "Квота Kiro",
+    "empty_title": "Файлы авторизации Kiro отсутствуют",
+    "empty_desc": "Загрузите учётные данные Kiro, чтобы увидеть оставшуюся квоту.",
+    "idle": "Не загружено. Нажмите \"Обновить квоту\".",
+    "loading": "Загрузка квоты...",
+    "load_failed": "Не удалось загрузить квоту: {{message}}",
+    "missing_auth_index": "В файле авторизации отсутствует auth_index",
+    "missing_file_id": "В файле авторизации отсутствует идентификатор файла",
+    "empty_data": "Данные по квоте отсутствуют",
+    "no_data": "Данные по квоте отсутствуют",
+    "invalid_response": "Неверный ответ квоты",
+    "fetch_failed": "Не удалось получить квоту",
+    "refresh_button": "Обновить квоту",
+    "fetch_all": "Получить все",
+    "subscription_label": "Подписка",
+    "usage_label": "Использование",
+    "free_trial_label": "Пробная версия",
+    "bonus_label": "Бонус",
+    "low_balance_warning": "⚠️ Остаток низкий (< 20%)"
+  },
   "vertex_import": {
     "title": "Вход с Vertex JSON",
     "description": "Загрузите JSON ключа сервисного аккаунта Google, чтобы сохранить его как auth-dir/vertex-<project>.json по тем же правилам, что и помощник CLI vertex-import.",

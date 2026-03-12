@@ -281,3 +281,39 @@ export interface KimiQuotaState {
   error?: string;
   errorStatus?: number;
 }
+
+// Kiro quota types
+export interface KiroQuotaPayload {
+  subscription_title?: string;
+  usage_limit?: number;
+  current_usage?: number;
+  balance?: number;
+  balance_percent?: number;
+  is_low_balance?: boolean;
+  free_trial_limit?: number;
+  free_trial_usage?: number;
+  bonus_limit?: number;
+  bonus_usage?: number;
+  fetched_at?: string;
+}
+
+export interface KiroQuotaInfo {
+  subscriptionTitle: string;
+  usageLimit: number;
+  currentUsage: number;
+  balance: number;
+  balancePercent: number;
+  isLowBalance: boolean;
+  freeTrialLimit?: number;
+  freeTrialUsage?: number;
+  bonusLimit?: number;
+  bonusUsage?: number;
+  fetchedAt?: string;
+}
+
+export interface KiroQuotaState {
+  status: 'idle' | 'loading' | 'success' | 'error';
+  quota: KiroQuotaInfo | null;
+  error?: string;
+  errorStatus?: number;
+}
