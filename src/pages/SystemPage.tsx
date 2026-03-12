@@ -22,6 +22,7 @@ import iconGlm from '@/assets/icons/glm.svg';
 import iconGrok from '@/assets/icons/grok.svg';
 import iconDeepseek from '@/assets/icons/deepseek.svg';
 import iconMinimax from '@/assets/icons/minimax.svg';
+import iconKiro from '@/assets/icons/kiro.svg';
 import styles from './SystemPage.module.scss';
 
 const MODEL_CATEGORY_ICONS: Record<string, string | { light: string; dark: string }> = {
@@ -34,6 +35,7 @@ const MODEL_CATEGORY_ICONS: Record<string, string | { light: string; dark: strin
   grok: iconGrok,
   deepseek: iconDeepseek,
   minimax: iconMinimax,
+  kiro: iconKiro,
 };
 
 export function SystemPage() {
