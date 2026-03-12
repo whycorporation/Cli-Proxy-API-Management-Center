@@ -28,7 +28,7 @@ import type {
   KiroQuotaInfo,
   KiroQuotaState,
 } from '@/types';
-import { apiCallApi, authFilesApi, getApiCallErrorMessage } from '@/services/api';
+import { apiCallApi, apiClient, authFilesApi, getApiCallErrorMessage } from '@/services/api';
 import {
   ANTIGRAVITY_QUOTA_URLS,
   ANTIGRAVITY_REQUEST_HEADERS,
@@ -1055,51 +1055,41 @@ const fetchKiroQuota = async (
   file: AuthFileItem,
   t: TFunction
 ): Promise<KiroQuotaInfo> => {
-  const rawAuthIndex = file['auth_index'] ?? file.authIndex;
-  const authIndex = normalizeAuthIndex(rawAuthIndex);
-  if (!authIndex) {
-    throw new Error(t('kiro_quota.missing_auth_index'));
-  }
-
   const fileId = String(file.id || file.name || '');
   if (!fileId) {
     throw new Error(t('kiro_quota.missing_file_id'));
   }
 
-  // Use ProxyPilot's apiCallApi to make authenticated request to management API
+  // Use apiClient to make authenticated request to management API
   const endpoint = `/v0/management/auth/${encodeURIComponent(fileId)}/kiro-quota`;
 
-  const result = await apiCallApi.request({
-    authIndex,
-    method: 'GET',
-    url: endpoint,
-    header: {},
-  });
+  try {
+    const data = await apiClient.get<unknown>(endpoint);
+    const payload = parseKiroQuotaPayload(data);
 
-  if (result.statusCode < 200 || result.statusCode >= 300) {
-    throw createStatusError(getApiCallErrorMessage(result), result.statusCode);
+    if (!payload) {
+      throw new Error(t('kiro_quota.invalid_response'));
+    }
+
+    // Transform to KiroQuotaInfo
+    return {
+      subscriptionTitle: payload.subscription_title || 'Unknown',
+      usageLimit: payload.usage_limit || 0,
+      currentUsage: payload.current_usage || 0,
+      balance: payload.balance || 0,
+      balancePercent: payload.balance_percent || 0,
+      isLowBalance: payload.is_low_balance || false,
+      freeTrialLimit: payload.free_trial_limit,
+      freeTrialUsage: payload.free_trial_usage,
+      bonusLimit: payload.bonus_limit,
+      bonusUsage: payload.bonus_usage,
+      fetchedAt: payload.fetched_at,
+    };
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : t('common.unknown_error');
+    const status = getStatusFromError(err);
+    throw createStatusError(errorMessage, status);
   }
-
-  const payload = parseKiroQuotaPayload(result.body ?? result.bodyText);
-
-  if (!payload) {
-    throw new Error(t('kiro_quota.invalid_response'));
-  }
-
-  // Transform to KiroQuotaInfo
-  return {
-    subscriptionTitle: payload.subscription_title || 'Unknown',
-    usageLimit: payload.usage_limit || 0,
-    currentUsage: payload.current_usage || 0,
-    balance: payload.balance || 0,
-    balancePercent: payload.balance_percent || 0,
-    isLowBalance: payload.is_low_balance || false,
-    freeTrialLimit: payload.free_trial_limit,
-    freeTrialUsage: payload.free_trial_usage,
-    bonusLimit: payload.bonus_limit,
-    bonusUsage: payload.bonus_usage,
-    fetchedAt: payload.fetched_at,
-  };
 };
 
 const renderKiroItems = (
