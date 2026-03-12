@@ -44,7 +44,11 @@ export function isKimiFile(file: AuthFileItem): boolean {
 }
 
 export function isKiroFile(file: AuthFileItem): boolean {
-  return resolveAuthProvider(file) === 'kiro';
+  // Kiro files have type="kiro" and provider="Github"
+  // Check type field directly since provider is "Github"
+  const type = file.type ?? file['type'];
+  const typeStr = String(type ?? '').trim().toLowerCase();
+  return typeStr === 'kiro';
 }
 
 export function isRuntimeOnlyAuthFile(file: AuthFileItem): boolean {
